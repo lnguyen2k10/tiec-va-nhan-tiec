@@ -1,0 +1,4 @@
+import {authenticated,db,failure} from '@/lib/server';
+import {requestSchema} from '@/lib/validation';
+export async function GET(){try{const {data,error}=await db().from('public_requests').select('*').order('created_at',{ascending:false}).limit(100);if(error)throw error;return Response.json({requests:data})}catch{return Response.json({error:'Chưa kết nối dữ liệu thật.'},{status:503})}}
+export async function POST(req:Request){try{const {client,user}=await authenticated(req);const body=requestSchema.safeParse(await req.json());if(!body.success)return Response.json({error:body.error.issues[0].message},{status:422});const {website,...fields}=body.data;void website;const {data,error}=await client.from('event_requests').insert({...fields,owner_id:user.id,consent_public:true,status:'pending'}).select().single();if(error)throw new Error(error.message);return Response.json({request:{...data,proposals:0}},{status:201})}catch(e){return failure(e)}}

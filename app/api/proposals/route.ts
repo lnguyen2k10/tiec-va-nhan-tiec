@@ -1,0 +1,3 @@
+import {authenticated,failure} from '@/lib/server';
+import {proposalSchema} from '@/lib/validation';
+export async function POST(req:Request){try{const {client}=await authenticated(req);const body=proposalSchema.safeParse(await req.json());if(!body.success)return Response.json({error:'Vui lòng kiểm tra báo giá và nội dung đề xuất. Tin minh họa không nhận đề xuất thật.'},{status:422});const {data,error}=await client.rpc('submit_proposal',{request:body.data.request_id,amount:body.data.price,content:body.data.message});if(error)throw new Error(error.message);return Response.json({proposal:data},{status:201})}catch(e){return failure(e)}}

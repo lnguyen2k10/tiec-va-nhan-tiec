@@ -1,0 +1,10 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {isExpired} from '../lib/data';
+import {canPropose,classify,requestSchema,proposalSchema} from '../lib/validation';
+test('deadline closes at midnight Vietnam time',()=>{assert.equal(isExpired({deadline:'2026-11-17'},Date.parse('2026-11-17T16:59:58Z')),false);assert.equal(isExpired({deadline:'2026-11-17'},Date.parse('2026-11-17T17:00:00Z')),true)});
+test('both membership and request must be active',()=>{const now=Date.parse('2026-11-17T00:00:00Z');assert.equal(canPropose('2027-01-01','2027-01-01',now),true);assert.equal(canPropose('2026-01-01','2027-01-01',now),false);assert.equal(canPropose('2027-01-01','2026-01-01',now),false);assert.equal(canPropose('bad','bad',now),false)});
+test('import classifies only potential demand',()=>{assert.equal(classify('Mình cần tìm địa điểm tổ chức tiệc sinh nhật'),'potential_request');assert.equal(classify('Nhà hàng chúng tôi nhận đặt tiệc'),'other')});
+test('request validation rejects spam and invalid deadlines',()=>{const input={title:'Tìm địa điểm tiệc cưới',type:'Tiệc cưới',city:'Hà Nội',date:'2099-01-20',deadline:'2099-01-10',guests:200,budget:150000000,description:'Cần tìm nhà hàng không gian sân vườn.'};assert.equal(requestSchema.safeParse(input).success,true);assert.equal(requestSchema.safeParse({...input,website:'spam'}).success,false);assert.equal(requestSchema.safeParse({...input,deadline:'2099-02-01'}).success,false);assert.equal(requestSchema.safeParse({...input,deadline:'2020-01-01'}).success,false)});
+test('sample requests cannot receive real proposals',()=>{assert.equal(proposalSchema.safeParse({request_id:'r1',price:1000000,message:'Đề xuất phương án tổ chức tiệc trọn gói.'}).success,false)});
+test('closed requests cannot receive applications before their deadline',()=>{assert.equal(isExpired({deadline:'2099-01-01',status:'closed'}),true)});
