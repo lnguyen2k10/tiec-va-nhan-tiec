@@ -12,7 +12,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Mở http://localhost:3000. Chưa cấu hình Supabase: hiển thị dữ liệu minh họa, tìm kiếm/lọc và các form hoạt động ở giao diện; không giả lập đăng nhập, đăng tin, thanh toán hoặc gửi đề xuất thành công. Không sử dụng tên, giá, điểm đánh giá và ảnh minh họa như thông tin doanh nghiệp đã xác minh.
+Mở http://localhost:3000. Chưa cấu hình Supabase: hiển thị 2 hồ sơ địa điểm công khai tại TP.HCM có nguồn chính thức (đợt kiểm tra ngày 20/11/2026) và danh sách nhu cầu minh họa có ghi chú riêng; tìm kiếm/lọc và các form hoạt động ở giao diện; không giả lập đăng nhập, đăng tin, thanh toán hoặc gửi đề xuất thành công. Danh bạ công khai tại `lib/data.ts` không khẳng định doanh nghiệp đã tham gia nền tảng. Các hồ sơ có địa chỉ, hotline kinh doanh, URL nguồn theo trường và ngày đối chiếu. Chưa xác minh trực tiếp qua điện thoại. Không gắn ảnh chung cho doanh nghiệp thật; giá, sức chứa tiệc và ảnh chưa xác nhận được để trống. Không có điểm đánh giá tự tạo. Nguồn có thể thay đổi; cần kiểm tra lại theo từng đợt nhỏ trước khi cập nhật.
 
 ## Kết nối Supabase
 
